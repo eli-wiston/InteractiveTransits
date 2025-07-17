@@ -1,0 +1,66 @@
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+
+#Setup video capture
+cascPath = '-f'
+faceCascade = cv2.CascadeClassifier(cascPath)
+video_capture = cv2.VideoCapture(0)
+
+#Define rgb value bounds of source color 
+red_low = np.array([0, 0, 100])
+red_up = np.array([100, 100, 255])
+
+#Setup plot
+plt.ion() 
+fig, ax = plt.subplots(figsize = (10,6))
+x_data = np.arange(0,50)
+y_data = x_data * 0
+line, = ax.plot(x_data, y_data, 'o', color = 'r')
+ax.set_xlabel('Time', size = 25)
+ax.set_ylabel('Brightness', size = 25)
+ax.set_ylim(0,100)
+
+ret, frame = video_capture.read()
+
+#Define frame bounds - which pixels will be processed
+x_min = int(0.4*len(frame[0]))
+x_max = int(0.6*len(frame[0]))
+y_min = int(0.25*len(frame))
+y_max = int(0.75*len(frame))
+
+while True:
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
+
+    #Identify fraction of red pixels
+    try: mask = cv2.inRange(frame[y_min:y_max,x_min:x_max], red_low, red_up)
+    except: continue
+    y = 100*len(np.argwhere(mask == 255))/len(mask.flatten())
+
+    #Update plot
+    x_data = np.append(np.delete(x_data,0),x_data[-1]+1)
+    y_data = np.append(np.delete(y_data,0), y)
+    
+    line.set_xdata(x_data)
+    line.set_ydata(y_data)
+
+    #print('recalculating limits')
+    ax.relim()  # Recalculate limits
+    ax.autoscale_view(True, True, False)  # Autoscale
+
+    #print('drawing')
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+    
+    #Show frame on video
+    cv2.rectangle(frame,(x_min,y_min),(x_max,y_max),(0,255,0),3)
+    cv2.imshow('Video',frame)
+    
+    if cv2.waitKey(1) == 27: break    
+
+
+
+# When everything is done, release the capture
+#video_capture.release()
+cv2.destroyAllWindows()
