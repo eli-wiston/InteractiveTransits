@@ -59,7 +59,6 @@ while True:
     
     if cv2.waitKey(1) == 27: break    
 
-    #time.sleep(0.1)
 
 
 # When everything is done, release the capture
