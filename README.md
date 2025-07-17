@@ -1,4 +1,4 @@
-# InteractiveTransits
+# Interactive Transits
 This code provides a way to interactively visualize exoplanet transits with a webcam (or phone camera). Point the camera at a solid color source (default is red) and then place object in the way to see the plot respond the source being obscured. 
 
 
