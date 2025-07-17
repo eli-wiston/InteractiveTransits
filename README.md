@@ -6,7 +6,6 @@ This code provides a way to interactively visualize exoplanet transits with a we
 The only packages required for these scripts to execute are:\
 numpy \
 matplotlib \
-sys \
 h5py \
 opencv-python
 
